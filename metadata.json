@@ -1,0 +1,5 @@
+{
+  "name": "ResumeRoast",
+  "description": "Upload your resume and get a funny mockumentary-style roast video generated for you.",
+  "requestFramePermissions": []
+}
