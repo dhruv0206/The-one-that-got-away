@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
-    const filePath = path.join('/tmp', `${resolvedParams.id}.mp4`);
+    const filePath = path.join(process.cwd(), 'tmp', `${resolvedParams.id}.mp4`);
     if (!fs.existsSync(filePath)) {
       return new NextResponse('Not found', { status: 404 });
     }

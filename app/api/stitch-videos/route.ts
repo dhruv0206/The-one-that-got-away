@@ -2,11 +2,13 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from 'ffmpeg-static';
-import ffprobeStatic from 'ffprobe-static';
 import { v4 as uuidv4 } from 'uuid';
 
 export const maxDuration = 300; // 5 minutes
+
+const TMP_DIR = path.join(process.cwd(), 'tmp');
+const FFMPEG_PATH = path.join(process.cwd(), 'node_modules', 'ffmpeg-static', 'ffmpeg.exe');
+const FFPROBE_PATH = path.join(process.cwd(), 'node_modules', 'ffprobe-static', 'bin', 'win32', 'x64', 'ffprobe.exe');
 
 export async function POST(req: Request) {
   try {
@@ -21,14 +23,14 @@ export async function POST(req: Request) {
     }
 
     const outputId = uuidv4();
-    const outputPath = path.join('/tmp', `${outputId}.mp4`);
-    const listPath = path.join('/tmp', `${outputId}.txt`);
+    const outputPath = path.join(TMP_DIR, `${outputId}.mp4`);
+    const listPath = path.join(TMP_DIR, `${outputId}.txt`);
 
-    const listContent = videoIds.map((id: string) => `file '${path.join('/tmp', `${id}.mp4`)}'`).join('\n');
+    const listContent = videoIds.map((id: string) => `file '${path.join(TMP_DIR, `${id}.mp4`)}'`).join('\n');
     fs.writeFileSync(listPath, listContent);
 
-    ffmpeg.setFfmpegPath(ffmpegStatic as string);
-    ffmpeg.setFfprobePath(ffprobeStatic.path);
+    ffmpeg.setFfmpegPath(FFMPEG_PATH);
+    ffmpeg.setFfprobePath(FFPROBE_PATH);
 
     return await new Promise<NextResponse>((resolve) => {
       ffmpeg()

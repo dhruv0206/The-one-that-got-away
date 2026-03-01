@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const base64Data = Buffer.from(arrayBuffer).toString("base64");
 
-    // const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.API_KEY || "AIzaSyDrw9OcClvpOh0zZL-jkbSoICfU8QUYH9Q";
-    const apiKey = "AIzaSyDrw9OcClvpOh0zZL-jkbSoICfU8QUYH9Q";
+    const apiKey = process.env.GEMINI_API_KEY
+  console.log(apiKey)
     const ai = new GoogleGenAI({ apiKey });
     
     const systemInstruction = `You are a comedy writer for a "The Office" (US) style mockumentary. Take the uploaded resume PDF and generate a comedic talking-head monologue.

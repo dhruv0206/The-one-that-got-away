@@ -13,12 +13,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No prompt provided" }, { status: 400 });
     }
 
-    // const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.API_KEY || "AIzaSyDrw9OcClvpOh0zZL-jkbSoICfU8QUYH9Q";
-    const apiKey = "AIzaSyAx6e1A1D8Ey-Q7pNkm5Htc5r5BJ2JUIO0";
+    const apiKey = process.env.GEMINI_API_KEY
+    console.log(apiKey);
+    if (!apiKey) {
+      return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+    }
     const ai = new GoogleGenAI({ apiKey });
     
     let operation = await ai.models.generateVideos({
-      model: 'veo-3.1-fast-generate-preview',
+      // model: 'veo-3.1-fast-generate-preview',
+      model: 'veo-3.1-generate-preview',
+
       prompt: veo_prompt,
       config: {
         numberOfVideos: 1,
@@ -53,7 +58,7 @@ export async function POST(req: Request) {
     const arrayBuffer = await videoResponse.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const id = uuidv4();
-    const filePath = path.join('/tmp', `${id}.mp4`);
+    const filePath = path.join(process.cwd(), 'tmp', `${id}.mp4`);
     fs.writeFileSync(filePath, buffer);
 
     return NextResponse.json({ videoUrl: `/api/video/${id}`, videoId: id });
